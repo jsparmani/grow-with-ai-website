@@ -1,5 +1,5 @@
 import React from "react";
-import {Layout, Menu, Breadcrumb, Icon} from "antd";
+import {Layout, Menu, Breadcrumb, Icon, Typography, Input, Button} from "antd";
 import "./App.css";
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -7,12 +7,22 @@ const {SubMenu} = Menu;
 
 class App extends React.Component {
     state = {
-        collapsed: false
+        collapsed: false,
+        loading: false,
+        iconLoading: false
+    };
+
+    enterLoading = () => {
+        this.setState({loading: true});
     };
 
     componentDidMount() {
         document.title = "Grow With AI";
     }
+
+    enterIconLoading = () => {
+        this.setState({iconLoading: true});
+    };
 
     onCollapse = collapsed => {
         console.log(collapsed);
@@ -77,7 +87,11 @@ class App extends React.Component {
                     </Menu>
                 </Sider>
                 <Layout>
-                    <Header style={{background: "#fff", padding: 0}} />
+                    <Header style={{background: "#fff", padding: 0}}>
+                        <Typography.Title className="title" ellipsis underline>
+                            Twitter Sentimental Analysis
+                        </Typography.Title>
+                    </Header>
                     <Content style={{margin: "0 16px"}}>
                         <Breadcrumb style={{margin: "16px 0"}}>
                             <Breadcrumb.Item>Twitter </Breadcrumb.Item>
@@ -87,14 +101,37 @@ class App extends React.Component {
                             style={{
                                 padding: 24,
                                 background: "#fff",
-                                minHeight: 360
+                                minHeight: 360,
+                                textAlign: "center"
                             }}
                         >
-                            This is the twitter sentimental analysis page
+                            Enter any #s, keywords below for further processing
+                            <div
+                                style={{
+                                    padding: 24,
+                                    marginTop: 50
+                                }}
+                            >
+                                <Input
+                                    size="large"
+                                    placeholder="Get your results"
+                                />
+                                <Button
+                                    type="primary"
+                                    loading={this.state.loading}
+                                    onClick={this.enterLoading}
+                                    size="large"
+                                    style={{
+                                        margin: 35
+                                    }}
+                                >
+                                    Click me!
+                                </Button>
+                            </div>
                         </div>
                     </Content>
                     <Footer style={{textAlign: "center"}}>
-                        Grow With AI ©2019
+                        Grow With AI ©2020
                     </Footer>
                 </Layout>
             </Layout>
