@@ -1,19 +1,40 @@
 import React from "react";
-import {Layout, Menu, Breadcrumb, Icon, Typography, Input, Button} from "antd";
+import {
+    Layout,
+    Menu,
+    Breadcrumb,
+    Icon,
+    Typography,
+    Input,
+    Button,
+    message,
+    Modal
+} from "antd";
 import "./App.css";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
 
+const success = () => {
+    const hide = message.loading("Action in progress..", 0);
+    // Dismiss manually and asynchronously
+    setTimeout(hide, 2500);
+};
+
 class App extends React.Component {
     state = {
         collapsed: false,
         loading: false,
-        iconLoading: false
+        iconLoading: false,
+        modalVisible: false
     };
 
     enterLoading = () => {
         this.setState({loading: true});
+        setTimeout(() => {
+            this.setState({modalVisible: true});
+        }, 2000);
+        success();
     };
 
     componentDidMount() {
@@ -106,6 +127,21 @@ class App extends React.Component {
                             }}
                         >
                             Enter any #s, keywords below for further processing
+                            <Modal
+                                title="Vertically centered modal dialog"
+                                centered
+                                visible={this.state.modalVisible}
+                                onOk={() =>
+                                    this.setState({modalVisible: false})
+                                }
+                                onCancel={() =>
+                                    this.setState({modalVisible: false})
+                                }
+                            >
+                                <p>some contents...</p>
+                                <p>some contents...</p>
+                                <p>some contents...</p>
+                            </Modal>
                             <div
                                 style={{
                                     padding: 24,
@@ -117,6 +153,8 @@ class App extends React.Component {
                                     placeholder="Get your results"
                                 />
                                 <Button
+                                    shape="round"
+                                    ghost
                                     type="primary"
                                     loading={this.state.loading}
                                     onClick={this.enterLoading}
