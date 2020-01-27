@@ -11,6 +11,7 @@ import {
     Modal
 } from "antd";
 import "./App.css";
+import axios from "axios";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -26,15 +27,30 @@ class App extends React.Component {
         collapsed: false,
         loading: false,
         iconLoading: false,
-        modalVisible: false
+        modalVisible: false,
+        data: "",
+        search_text: ""
     };
 
-    enterLoading = () => {
+    getResults = () => {
         this.setState({loading: true});
-        setTimeout(() => {
-            this.setState({modalVisible: true});
-        }, 2000);
         success();
+        let url = `https://growwithai.pythonanywhere.com/predict_api?value=${this.state.search_text}`;
+        console.log(url);
+        axios
+            .get(url)
+            .then(res => {
+                this.setState({data: res.data});
+                this.setState({
+                    loading: false,
+                    modalVisible: true,
+                    search_text: ""
+                });
+            })
+            .catch(e => {
+                console.error(e);
+                this.setState({loading: false});
+            });
     };
 
     componentDidMount() {
@@ -128,7 +144,7 @@ class App extends React.Component {
                         >
                             Enter any #s, keywords below for further processing
                             <Modal
-                                title="Vertically centered modal dialog"
+                                title="Your graphical result"
                                 centered
                                 visible={this.state.modalVisible}
                                 onOk={() =>
@@ -138,9 +154,10 @@ class App extends React.Component {
                                     this.setState({modalVisible: false})
                                 }
                             >
-                                <p>some contents...</p>
-                                <p>some contents...</p>
-                                <p>some contents...</p>
+                                <img
+                                    src={`data:image/jpeg;base64,${this.state.data}`}
+                                    width="450"
+                                />
                             </Modal>
                             <div
                                 style={{
@@ -151,19 +168,30 @@ class App extends React.Component {
                                 <Input
                                     size="large"
                                     placeholder="Get your results"
+                                    allowClear
+                                    name="search_text"
+                                    value={this.state.search_text}
+                                    onChange={e => {
+                                        this.setState({
+                                            [e.target.name]: e.target.value
+                                        });
+                                    }}
+                                    onPressEnter={() => {
+                                        this.getResults();
+                                    }}
                                 />
                                 <Button
                                     shape="round"
                                     ghost
                                     type="primary"
                                     loading={this.state.loading}
-                                    onClick={this.enterLoading}
+                                    onClick={this.getResults}
                                     size="large"
                                     style={{
                                         margin: 35
                                     }}
                                 >
-                                    Click me!
+                                    Get Results!
                                 </Button>
                             </div>
                         </div>
